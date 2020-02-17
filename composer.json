@@ -3,7 +3,6 @@
 	"description": "Utilities for WordPress",
 	"license": "MIT",
 	"homepage": "https://wppress.net/",
-	"minimum-stability": "dev",
 	"authors": [
 		{
 			"name": "WPPress",
