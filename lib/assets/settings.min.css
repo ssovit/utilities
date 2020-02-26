@@ -1,0 +1,56 @@
+.settings-wrap label.switch {
+	position: relative;
+	display: inline-block;
+	height: 20px;
+	width: 40px
+}
+.settings-wrap label.switch input {
+	opacity: 0;
+	width: 0;
+	height: 0
+}
+.settings-wrap label.switch span {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	-webkit-transition: .4s;
+	-o-transition: .4s;
+	transition: .4s;
+	border-radius: 34px
+}
+.settings-wrap label.switch span:before {
+	position: absolute;
+	content: "";
+	height: 14px;
+	width: 14px;
+	left: 3px;
+	top: 3px;
+	background-color: #fff;
+	-webkit-transition: .3s linear;
+	-o-transition: .3s linear;
+	transition: .3s linear;
+	border-radius: 50%
+}
+.settings-wrap label.switch input:checked+span {
+	background-color: #4caf50
+}
+.settings-wrap label.switch input:checked+span:before {
+	left: 23px
+}
+.settings-wrap label.switch input:focus+span {
+	-webkit-box-shadow: 0 0 1px #2196f3;
+	box-shadow: 0 0 1px #2196f3
+}
+.settings-wrap  .colorpicker-pickr {
+	width: 26px;
+	height: 26px;
+	border-radius: 2px;
+	display: block;
+	color: rgba(255, 255, 255, 0);
+	background: currentColor;
+	border: 1px solid #333;
+}

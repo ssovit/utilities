@@ -2,15 +2,9 @@
 	"name": "ssovit/utilities",
 	"description": "Utilities for WordPress",
 	"license": "MIT",
-	"homepage": "https://wppress.net/",
-	"minimum-stability": "dev",
+	"homepage": "https://ssovit.com/",
 	"authors": [
-		{
-			"name": "WPPress",
-			"email": "info@wppress.net",
-			"homepage": "https://wppress.net/",
-			"role": "Developer"
-        },
+
 		{
 			"name": "Sovit Tamrakar",
 			"email": "sovit.tamrakar@gmail.com",
@@ -23,10 +17,10 @@
 		"issues": "https://github.com/ssovit/utilities/issues",
 		"email": "info@wppress.net"
 	},
-	"require": {
-		"ssovit/helper": "dev-master",
-		"ssovit/wp-rest": "dev-master"
+	"autoload": {
+		"psr-4": {
+			"Sovit\\": "lib"
+		}
 	},
-	
 	"type": "library"
 }
