@@ -30,7 +30,7 @@ if (!class_exists("\Sovit\Settings")) {
         /**
          * @var mixed
          */
-        private $mernu_parent = false;
+        private $menu_parent = false;
 
         /**
          * @var mixed
