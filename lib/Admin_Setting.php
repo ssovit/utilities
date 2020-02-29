@@ -2,9 +2,7 @@
 namespace Sovit;
 if (!class_exists("\Sovit\Admin_Setting")) {
     class Admin_Setting {
-        /**
-         * @var mixed
-         */
+
         public $page = null;
 
         /**
