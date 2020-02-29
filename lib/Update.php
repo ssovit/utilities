@@ -14,6 +14,7 @@ if (!class_exists('\Sovit\Update')) {
          * @param $license_setting_page
          */
         public function __construct($file, $plugin_name, $itemid, $version, $license_key, $license_page) {
+            return;
             $this->file         = $file;
             $this->plugin_name  = $plugin_name;
             $this->item_id      = $itemid;

@@ -59,7 +59,6 @@ if (!class_exists("\Sovit\Admin_Setting")) {
         public function __construct($page_id = false, $setting_key = false, $page_title = false, $menu_title = false) {
             add_action('admin_menu', [$this, 'admin_menu'], 20);
             add_action('admin_init', [$this, 'register_settings_fields']);
-            add_filter('wppress/settings/field_args', [$this, 'field_args'], 4, 10);
             if ($page_id !== false) {
                 $this->set_page_id($page_id);
             }
@@ -255,21 +254,7 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             echo '</div>';
         }
 
-        /**
-         * @param $name
-         * @param $key
-         * @param $field
-         * @param $values
-         * @return mixed
-         */
-        public function field_args($name, $key, $field, $values = false) {
-            $field['name']  = $name;
-            $field['std']   = isset($field['std']) ? $field['std'] : '';
-            $field['value'] = $values[$key] ?? $field['std'];
-            $field['id']    = sanitize_title($field['name']);
 
-            return $field;
-        }
 
         /**
          * @return mixed
@@ -286,23 +271,22 @@ if (!class_exists("\Sovit\Admin_Setting")) {
          * @param false $value
          * @return null
          */
-        public function register_setting_field($field_id, $field, $section_id, $prefix = false, $value = false) {
+        public function register_setting_field($field_id, $field, $section_id, $setting_key = false, $value = []) {
             $controls_class_name = '\Sovit\Controls';
-            if (false === $prefix) {
-                $prefix = $this->setting_key;
+            if (false === $setting_key) {
+                $setting_key = $this->setting_key;
             }
-            $prefix        = $prefix . '[' . $field_id . ']';
-            $full_field_id = $prefix . '_' . $field_id;
-            if (isset($field['fields']) && !empty($field['fields'])) {
-                foreach ($field['fields'] as $subfield_id => $subfield) {
-                    $value = $value[$field_id] ?? [];
-                    $this->register_setting_field($subfield_id, $subfield, $section_id, $prefix, $value);
-                }
-
-                return;
-            }
-            $field['field_args']['id'] = $field_id;
-            $field['field_args']       = apply_filters('wppress/settings/field_args', $prefix, $field_id, $field['field_args'], $value);
+            $args=$field['field_args'];
+            $args['name']        = $setting_key . '[' . $field_id . ']';
+            $args['std']        = isset($args['std'])?$args['std']:"";
+            $args['value']        = isset($args['value'])?$args['value']:$args['std'];
+            $args['id']        = sanitize_title($args['name']);
+            $field['field_args']=$args;
+           
+           /* $field['field_args']['id'] = $field_id;
+            $field['field_args']['std'] = isset($);
+            $field['field_args']['value'] = $field_id;
+            $field['field_args']       = apply_filters('wppress/settings/field_args', $field_id, $field['field_args'], $value);*/
 
             $field_classes = [];
 
@@ -344,7 +328,8 @@ if (!class_exists("\Sovit\Admin_Setting")) {
                     add_settings_section($full_section_id, $label, $section_callback, $this->page_id);
 
                     foreach ($section['fields'] as $field_id => $field) {
-                        $this->register_setting_field($field_id, $field, $full_section_id, $this->setting_key, get_option($this->setting_key));
+
+                        $this->register_setting_field($field_id, $field, $full_section_id, $this->setting_key, get_option($this->setting_key,[]));
                     }
                 }
             }

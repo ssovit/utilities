@@ -161,7 +161,6 @@ if (!class_exists('\Sovit\Helper')) {
                     'class' => [],
                 ],
             ];
-
             if (function_exists('wp_kses')) {
                 // WP is here
                 return wp_kses($raw, $allowed_tags);
