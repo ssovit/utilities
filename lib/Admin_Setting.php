@@ -280,11 +280,6 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             $args['value']        = isset($value[$field_id])?$value[$field_id]:$args['std'];
             $args['id']        = sanitize_title($args['name']);
             $field['field_args']=$args;
-           
-           /* $field['field_args']['id'] = $field_id;
-            $field['field_args']['std'] = isset($);
-            $field['field_args']['value'] = $field_id;
-            $field['field_args']       = apply_filters('wppress/settings/field_args', $field_id, $field['field_args'], $value);*/
 
             $field_classes = [];
 
