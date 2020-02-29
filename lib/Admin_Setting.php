@@ -295,7 +295,7 @@ if (!class_exists("\Sovit\Admin_Setting")) {
 
             add_settings_field(
                 $field['field_args']['id'],
-                $field['label'] ?? '',
+                isset($field['label']) ?$field['label']: '',
                 $render_callback,
                 $this->page_id,
                 $section_id,
