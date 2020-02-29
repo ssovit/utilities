@@ -277,7 +277,7 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             $args=$field['field_args'];
             $args['name']        = $setting_key . '[' . $field_id . ']';
             $args['std']        = isset($args['std'])?$args['std']:"";
-            $args['value']        = isset($args['value'])?$args['value']:$args['std'];
+            $args['value']        = isset($value[$field_id])?$value[$field_id]:$args['std'];
             $args['id']        = sanitize_title($args['name']);
             $field['field_args']=$args;
            
