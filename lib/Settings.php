@@ -6,38 +6,36 @@ if (!class_exists("\Sovit\Settings")) {
         /**
          * @var string
          */
-        private static $key = 'wppress';
+        private $key = 'wppress';
 
         /**
          * @param $key
-         *
-         * @return mixed
          */
-        public static function get_option($key,$default=false) {
-            $options = self::get_options();
+        public function __construct($key = "wppress") {
+            $this->key = $key;
+        }
 
+        /**
+         * @param $key
+         * @param $default
+         */
+        public function get_option($key, $default = false) {
+            $options = $this->get_options();
             return isset($options[$key]) ? $options[$key] : $default;
         }
 
-        public static function get_options() {
-            return get_option(self::$key, []);
-        }
-
-        /**
-         * @param $key
-         */
-        public static function set_setting_key($key) {
-            self::$key = $key;
+        public function get_options() {
+            return get_option($this->key, []);
         }
 
         /**
          * @param $key
          * @param $value
          */
-        public static function update_option($key, $value) {
-            $options       = self::get_options();
+        public function update_option($key, $value) {
+            $options       = $this->get_options();
             $options[$key] = $value;
-            update_option(self::$key, $options);
+            update_option($this->key, $options);
             return true;
         }
     }
