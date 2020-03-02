@@ -199,10 +199,10 @@ if (!class_exists("\Sovit\Admin_Setting")) {
                     $active_class = ' nav-tab-active';
                 }
 
-                echo "<a id='tab-nav-{$tab_id}' class='nav-tab{$active_class}' href='#tab-{$tab_id}'>{$tab['label']}</a>";
+                echo "<a id='tab-nav-".esc_attr($tab_id)."' class='nav-tab{$active_class}' href='#tab-".esc_attr($tab_id)."'>{$tab['label']}</a>";
             }
             echo '</div>';
-            echo '<form id="' . $this->page_id . '-settings-form" method="post" action="options.php">';
+            echo '<form id="' . esc_attr($this->page_id) . '-settings-form" method="post" action="options.php">';
 
             settings_fields($this->page_id);
 
@@ -217,7 +217,7 @@ if (!class_exists("\Sovit\Admin_Setting")) {
                     $active_class = ' tab-active';
                 }
 
-                echo "<div id='tab-{$tab_id}' class='tab-wrapper{$active_class}'>";
+                echo "<div id='tab-{$tab_id}' class='tab-wrapper".esc_attr($active_class)."'>";
                 if (!empty($tab['render_callback']) && \is_callable($tab['render_callback'])) {
                     $tab['render_callback']();
                 }
@@ -230,7 +230,7 @@ if (!class_exists("\Sovit\Admin_Setting")) {
                         }
                         $first_section = false;
                         if (!empty($section['label'])) {
-                            echo "<h2>{$section['label']}</h2>";
+                            echo "<h2>".esc_html__($section['label'])."</h2>";
                         }
 
                         if (!empty($section['callback'])) {
