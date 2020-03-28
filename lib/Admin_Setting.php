@@ -2,7 +2,9 @@
 namespace Sovit;
 if (!class_exists("\Sovit\Admin_Setting")) {
     class Admin_Setting {
-
+        /**
+         * @var mixed
+         */
         public $page = null;
 
         /**
@@ -18,17 +20,17 @@ if (!class_exists("\Sovit\Admin_Setting")) {
         /**
          * @var mixed
          */
+        private $menu_parent = false;
+
+        /**
+         * @var mixed
+         */
         private $menu_position = null;
 
         /**
          * @var mixed
          */
         private $menu_title;
-
-        /**
-         * @var mixed
-         */
-        private $menu_parent = false;
 
         /**
          * @var mixed
@@ -186,6 +188,7 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             echo "<style>.settings-wrap .tab-wrapper {display: none;}.settings-wrap .tab-wrapper.tab-active {display: block;}</style>";
             echo '<div class="wrap settings-wrap ' . $this->page_id . '-wrap">';
             echo '<h1>' . $this->page_title . '</h1>';
+            do_action("wppress/settings/" . $this->page_id . "/tabs/before");
             echo '<div id="settings-tabs-wrapper" class="nav-tab-wrapper">';
 
             foreach ($tabs as $tab_id => $tab) {
@@ -199,7 +202,7 @@ if (!class_exists("\Sovit\Admin_Setting")) {
                     $active_class = ' nav-tab-active';
                 }
 
-                echo "<a id='tab-nav-".esc_attr($tab_id)."' class='nav-tab{$active_class}' href='#tab-".esc_attr($tab_id)."'>{$tab['label']}</a>";
+                echo "<a id='tab-nav-" . esc_attr($tab_id) . "' class='nav-tab{$active_class}' href='#tab-" . esc_attr($tab_id) . "'>{$tab['label']}</a>";
             }
             echo '</div>';
             echo '<form id="' . esc_attr($this->page_id) . '-settings-form" method="post" action="options.php">';
@@ -217,7 +220,7 @@ if (!class_exists("\Sovit\Admin_Setting")) {
                     $active_class = ' tab-active';
                 }
 
-                echo "<div id='tab-{$tab_id}' class='tab-wrapper".esc_attr($active_class)."'>";
+                echo "<div id='tab-{$tab_id}' class='tab-wrapper" . esc_attr($active_class) . "'>";
                 if (!empty($tab['render_callback']) && \is_callable($tab['render_callback'])) {
                     $tab['render_callback']();
                 }
@@ -230,7 +233,7 @@ if (!class_exists("\Sovit\Admin_Setting")) {
                         }
                         $first_section = false;
                         if (!empty($section['label'])) {
-                            echo "<h2>".esc_html__($section['label'])."</h2>";
+                            echo "<h2>" . esc_html__($section['label']) . "</h2>";
                         }
 
                         if (!empty($section['callback'])) {
@@ -250,9 +253,9 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             submit_button();
             echo '</form>';
             echo '</div>';
+            do_action("wppress/settings/" . $this->page_id . "/tabs/after");
+
         }
-
-
 
         /**
          * @return mixed
@@ -274,12 +277,12 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             if (false === $setting_key) {
                 $setting_key = $this->setting_key;
             }
-            $args=$field['field_args'];
+            $args                = $field['field_args'];
             $args['name']        = $setting_key . '[' . $field_id . ']';
-            $args['std']        = isset($args['std'])?$args['std']:"";
-            $args['value']        = isset($value[$field_id])?$value[$field_id]:$args['std'];
-            $args['id']        = sanitize_title($args['name']);
-            $field['field_args']=$args;
+            $args['std']         = isset($args['std']) ? $args['std'] : "";
+            $args['value']       = isset($value[$field_id]) ? $value[$field_id] : $args['std'];
+            $args['id']          = sanitize_title($args['name']);
+            $field['field_args'] = $args;
 
             $field_classes = [];
 
@@ -295,7 +298,7 @@ if (!class_exists("\Sovit\Admin_Setting")) {
 
             add_settings_field(
                 $field['field_args']['id'],
-                isset($field['label']) ?$field['label']: '',
+                isset($field['label']) ? $field['label'] : '',
                 $render_callback,
                 $this->page_id,
                 $section_id,
@@ -322,7 +325,7 @@ if (!class_exists("\Sovit\Admin_Setting")) {
 
                     foreach ($section['fields'] as $field_id => $field) {
 
-                        $this->register_setting_field($field_id, $field, $full_section_id, $this->setting_key, get_option($this->setting_key,[]));
+                        $this->register_setting_field($field_id, $field, $full_section_id, $this->setting_key, get_option($this->setting_key, []));
                     }
                 }
             }
