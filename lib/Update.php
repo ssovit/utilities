@@ -1,4 +1,5 @@
 <?php
+
 namespace Sovit;
 
 if (!class_exists('\Sovit\Update')) {
@@ -55,7 +56,7 @@ if (!class_exists('\Sovit\Update')) {
                 esc_attr($wp_list_table->get_column_count()),
                 "notice-warning"
             );
-            echo "<a href=\"" . $this->license_page . "\">" . esc_html__("Enter valid license key/purchase code to enable automatic update.") . "</a>";
+            echo "<a href=\"" . $this->license_page . "\">" . esc_html__("Enter valid license key/purchase code to enable automatic update.","wppress-covid19") . "</a>";
             echo "</p></td></tr>";
 
         }

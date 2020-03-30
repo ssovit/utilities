@@ -1,4 +1,5 @@
 <?php
+
 namespace Sovit;
 if (!class_exists('\Sovit\Helper')) {
     class Helper {
