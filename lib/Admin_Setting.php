@@ -1,5 +1,4 @@
 <?php
-
 namespace Sovit;
 if (!class_exists("\Sovit\Admin_Setting")) {
     class Admin_Setting {
@@ -224,34 +223,36 @@ if (!class_exists("\Sovit\Admin_Setting")) {
                 echo "<div id='tab-{$tab_id}' class='tab-wrapper" . esc_attr($active_class) . "'>";
                 if (!empty($tab['render_callback']) && \is_callable($tab['render_callback'])) {
                     $tab['render_callback']();
-                }
-                $first_section = true;
-                if (!empty($tab['sections'])) {
-                    foreach ($tab['sections'] as $section_id => $section) {
-                        $full_section_id = $this->page_id . '_' . $section_id . '_section';
-                        if (false === $first_section) {
-                            echo '<hr>';
+                } else {
+                    $first_section = true;
+                    if (!empty($tab['sections'])) {
+                        foreach ($tab['sections'] as $section_id => $section) {
+                            $full_section_id = $this->page_id . '_' . $section_id . '_section';
+                            if (false === $first_section) {
+                                echo '<hr>';
+                            }
+                            $first_section = false;
+                            if (!empty($section['label'])) {
+                                echo "<h2>" . esc_html__($section['label']) . "</h2>";
+                            }
+
+                            if (!empty($section['callback']) && \is_callable($section['callback'])) {
+                                $section['callback']();
+                            } else {
+
+                                echo '<table class="form-table">';
+
+                                do_settings_fields($this->page_id, $full_section_id);
+
+                                echo '</table>';
+                            }
                         }
-                        $first_section = false;
-                        if (!empty($section['label'])) {
-                            echo "<h2>" . esc_html__($section['label']) . "</h2>";
-                        }
-
-                        if (!empty($section['callback'])) {
-                            $section['callback']();
-                        }
-
-                        echo '<table class="form-table">';
-
-                        do_settings_fields($this->page_id, $full_section_id);
-
-                        echo '</table>';
                     }
+                    submit_button();
                 }
                 echo '</div>';
             }
 
-            submit_button();
             echo '</form>';
             echo '</div>';
             do_action("wppress/settings/" . $this->page_id . "/tabs/after");
