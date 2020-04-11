@@ -1,5 +1,4 @@
 <?php
-
 namespace Sovit;
 
 use Sovit\Helper;
@@ -34,6 +33,14 @@ if (!class_exists("\Sovit\Controls")) {
                 $method_name = 'text';
             }
             self::$method_name($field);
+            if (!empty($field['sub_desc'])) {
+                echo Helper::kses($field['sub_desc']);
+            }
+            if (!empty($field['desc'])) {
+                echo '<p class="description">';
+                echo Helper::kses($field['desc']);
+                echo '</p>';
+            }
         }
 
         /**
@@ -46,14 +53,7 @@ if (!class_exists("\Sovit\Controls")) {
             echo ' />';
             echo '<span></span>';
             echo '</label>';
-            if (!empty($field['sub_desc'])) {
-                echo Helper::kses($field['sub_desc']);
-            }
-            if (!empty($field['desc'])) {
-                echo '<p class="description">';
-                echo Helper::kses($field['desc']);
-                echo '</p>';
-            }
+
         }
 
         /**
@@ -74,14 +74,7 @@ if (!class_exists("\Sovit\Controls")) {
                 echo esc_html__($option['name']);
                 echo '</p>';
             }
-            if (!empty($field['sub_desc'])) {
-                echo Helper::kses($field['sub_desc']);
-            }
-            if (!empty($field['desc'])) {
-                echo '<p class="description">';
-                echo Helper::kses($field['desc']);
-                echo '</p>';
-            }
+
         }
 
         /**
@@ -91,14 +84,23 @@ if (!class_exists("\Sovit\Controls")) {
             $attributes = Helper::render_html_attributes($field['attributes']);
             echo '<input type="hidden" id="' . esc_attr($field['id']) . '" name="' . esc_attr($field['name']) . '" value="' . esc_attr($field['value']) . '"/>';
             echo '<span class="colorpicker-pickr" data-value="' . esc_attr($field['value']) . '" data-target="' . esc_attr($field['id']) . '" data-default="' . esc_attr($field['std']) . '"></span>';
-            if (!empty($field['sub_desc'])) {
-                echo Helper::kses($field['sub_desc']);
+        }
+
+        /**
+         * @param array $field
+         */
+        private static function editor($field = []) {
+            if (empty($field['attributes']['class'])) {
+                $field['attributes']['class'] = 'regular-text';
             }
-            if (!empty($field['desc'])) {
-                echo '<p class="description">';
-                echo Helper::kses($field['desc']);
-                echo '</p>';
-            }
+
+            $attributes = \Sovit\Helper::render_html_attributes($field['attributes']);
+            wp_editor($field['value'], $field['id'], [
+                'textarea_name' => $field['name'],
+                'teeny'         => true,
+                'media_buttons' => false,
+            ]);
+
         }
 
         /**
@@ -133,15 +135,6 @@ if (!class_exists("\Sovit\Controls")) {
                 echo '>' . esc_html__($label) . '</option>';
             }
             echo '</select>';
-
-            if (!empty($field['sub_desc'])) {
-                echo Helper::kses($field['sub_desc']);
-            }
-            if (!empty($field['desc'])) {
-                echo '<p class="description">';
-                echo Helper::kses($field['desc']);
-                echo '</p>';
-            }
         }
 
         /**
@@ -155,14 +148,6 @@ if (!class_exists("\Sovit\Controls")) {
             $attributes = Helper::render_html_attributes($field['attributes']);
             echo '<input type="' . esc_attr($field['type']) . '" id="' . esc_attr($field['id']) . '" name="' . esc_attr($field['name']) . '" value="' . esc_attr($field['value']) . '" ' . $attributes . '/>';
 
-            if (!empty($field['sub_desc'])) {
-                echo Helper::kses($field['sub_desc']);
-            }
-            if (!empty($field['desc'])) {
-                echo '<p class="description">';
-                echo Helper::kses($field['desc']);
-                echo '</p>';
-            }
         }
     }
 }
