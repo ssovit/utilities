@@ -1,5 +1,4 @@
 <?php
-
 namespace Sovit;
 
 if (!class_exists('\Sovit\Update')) {
@@ -12,7 +11,8 @@ if (!class_exists('\Sovit\Update')) {
          * @param $itemid
          * @param $version
          * @param $license_key
-         * @param $license_setting_page
+         * @param $license_page
+         * @return mixed
          */
         public function __construct($file, $plugin_name, $itemid, $version, $license_key, $license_page) {
             $this->file         = $file;
@@ -117,7 +117,6 @@ if (!class_exists('\Sovit\Update')) {
             $query['wpp-item-version'] = $this->version;
             $query['wpp-site-url']     = \Sovit\Helper::maybeabsolute(site_url(), 'https://' . $_SERVER['HTTP_HOST']);
             $url                       = add_query_arg($query, self::SERVER);
-
             // Get the remote info
             $request = wp_remote_get($url);
             if (!is_wp_error($request) || 200 === wp_remote_retrieve_response_code($request)) {
@@ -149,6 +148,13 @@ if (!class_exists('\Sovit\Update')) {
         }
 
         /**
+         * @param $file
+         */
+        public function set_file($file) {
+            $this->file = $file;
+        }
+
+        /**
          * @param $id
          * @return mixed
          */
@@ -173,13 +179,6 @@ if (!class_exists('\Sovit\Update')) {
         public function set_license_page($page) {
             $this->license_page = $page;
             return $this;
-        }
-
-        /**
-         * @param $file
-         */
-        public function set_file($file) {
-            $this->file = $file;
         }
 
         /**
