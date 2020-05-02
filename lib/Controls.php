@@ -46,6 +46,22 @@ if (!class_exists("\Sovit\Controls")) {
         /**
          * @param array $field
          */
+        public function textarea($field = []) {
+            if (empty($field['attributes']['class'])) {
+                $field['attributes']['class'] = 'widefat';
+            }
+            if (empty($field['attributes']['rows'])) {
+                $field['attributes']['rows'] = '5';
+            }
+
+            $attributes =Helper::render_html_attributes($field['attributes']);
+            echo '<textarea id="' . esc_attr($field['id']) . '" name="' . esc_attr($field['name']) . '" ' . $attributes . '/>' . esc_html($field['value']) . '</textarea>';
+
+        }
+
+        /**
+         * @param array $field
+         */
         private static function checkbox(array $field) {
             echo '<label class="switch">';
             echo '<input type="checkbox" id="' . esc_attr($field['id']) . '" name="' . esc_attr($field['name']) . '" value="yes" ';
@@ -90,17 +106,11 @@ if (!class_exists("\Sovit\Controls")) {
          * @param array $field
          */
         private static function editor($field = []) {
-            if (empty($field['attributes']['class'])) {
-                $field['attributes']['class'] = 'regular-text';
-            }
-
-            $attributes = \Sovit\Helper::render_html_attributes($field['attributes']);
             wp_editor($field['value'], $field['id'], [
                 'textarea_name' => $field['name'],
                 'teeny'         => true,
                 'media_buttons' => false,
             ]);
-
         }
 
         /**
@@ -135,6 +145,7 @@ if (!class_exists("\Sovit\Controls")) {
                 echo '>' . esc_html__($label) . '</option>';
             }
             echo '</select>';
+            
         }
 
         /**

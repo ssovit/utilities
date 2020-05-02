@@ -71,7 +71,7 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             if ($setting_key !== false) {
                 $this->set_setting_key($setting_key);
             }
-            add_action('admin_enqueue_scripts', [$this, 'admin_enqueue_scripts']);
+            add_action('admin_enqueue_scripts', [$this, 'admin_enqueue_scripts'],999);
 
             return $this;
         }
