@@ -437,7 +437,7 @@ if (!class_exists('\Sovit\Helper')) {
             ]);
 
         }
-        public function get_string_between($string, $start, $end)
+        public static function get_string_between($string, $start, $end)
         {
             $string = ' ' . $string;
             $ini    = strpos($string, $start);
