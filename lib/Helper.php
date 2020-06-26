@@ -1,14 +1,17 @@
 <?php
 
 namespace Sovit;
+
 if (!class_exists('\Sovit\Helper')) {
-    class Helper {
+    class Helper
+    {
         /**
          * @param $message
          * @param $type
          * @param $btn
          */
-        public static function add_notice($message = "", $type = "success", $btn = false) {
+        public static function add_notice($message = "", $type = "success", $btn = false)
+        {
             echo "<div class=\"notice $type\">";
             echo wpautop($message);
             if (!empty($btn)) {
@@ -20,7 +23,8 @@ if (!class_exists('\Sovit\Helper')) {
         /**
          * @param $file
          */
-        public static function get_file_url($file = __FILE__) {
+        public static function get_file_url($file = __FILE__)
+        {
             $file_path = str_replace(str_replace("\\", "/", WP_CONTENT_DIR), "", str_replace("\\", "/", $file));
             if ($file_path) {
                 return content_url($file_path);
@@ -35,7 +39,8 @@ if (!class_exists('\Sovit\Helper')) {
          * @param $value
          * @param $hideEmpty
          */
-        public static function get_terms($taxonomy = 'category', $key = "slug", $value = "name", $hideEmpty = true) {
+        public static function get_terms($taxonomy = 'category', $key = "slug", $value = "name", $hideEmpty = true)
+        {
             $terms = get_terms([
                 'taxonomy'   => $taxonomy,
                 'hide_empty' => $hideEmpty,
@@ -52,7 +57,8 @@ if (!class_exists('\Sovit\Helper')) {
          * @param $suggested
          * @return string
          */
-        public static function goodname($filename = "", $suggested = "wppress") {
+        public static function goodname($filename = "", $suggested = "wppress")
+        {
             $part          = explode(".", $filename);
             $ext           = $part[count($part) - 1];
             $friendly_name = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $suggested), '-'));
@@ -63,7 +69,8 @@ if (!class_exists('\Sovit\Helper')) {
          * @param $raw
          * @return mixed
          */
-        public static function kses($raw) {
+        public static function kses($raw)
+        {
 
             $allowed_tags = [
                 'a'                             => [
@@ -173,7 +180,8 @@ if (!class_exists('\Sovit\Helper')) {
         /**
          * @param array $array
          */
-        public static function map_for_checkbox_list($array = []) {
+        public static function map_for_checkbox_list($array = [])
+        {
             return array_map(function ($key, $value) {
                 return ["value" => $key, "name" => $value];
             }, array_keys($array), $array);
@@ -184,7 +192,8 @@ if (!class_exists('\Sovit\Helper')) {
          * @param $base
          * @return mixed
          */
-        public static function maybeabsolute($rel, $base) {
+        public static function maybeabsolute($rel, $base)
+        {
             if (parse_url($rel, PHP_URL_SCHEME) != '') {
                 return $rel;
             }
@@ -208,7 +217,8 @@ if (!class_exists('\Sovit\Helper')) {
          * @param $format
          * @return mixed
          */
-        public static function phpToMoment($format) {
+        public static function phpToMoment($format)
+        {
             $replacements = [
                 'd' => 'DD',
                 'D' => 'ddd',
@@ -254,7 +264,8 @@ if (!class_exists('\Sovit\Helper')) {
         /**
          * @param array $attributes
          */
-        public static function render_html_attributes(array $attributes) {
+        public static function render_html_attributes(array $attributes)
+        {
             $rendered_attributes = [];
 
             foreach ($attributes as $attribute_key => $attribute_values) {
@@ -271,11 +282,13 @@ if (!class_exists('\Sovit\Helper')) {
         /**
          * @param $string
          */
-        public static function slugify($string = "") {
+        public static function slugify($string = "")
+        {
             return strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $string), '-'));
         }
 
-        public static function timezone() {
+        public static function timezone()
+        {
             return array_flip([
                 "Visitor's Default"                           => 'USER_BROWSER',
                 '(UTC-11:00) Midway Island'                   => 'Pacific/Midway',
@@ -423,6 +436,18 @@ if (!class_exists('\Sovit\Helper')) {
                 '(UTC+13:00) Nuku\'alofa'                     => 'Pacific/Tongatapu',
             ]);
 
+        }
+        public static function get_string_between($string, $start, $end)
+        {
+            $string = ' ' . $string;
+            $ini    = strpos($string, $start);
+            if ($ini == 0) {
+                return '';
+            }
+
+            $ini += strlen($start);
+            $len = strpos($string, $end, $ini) - $ini;
+            return substr($string, $ini, $len);
         }
     }
 }
