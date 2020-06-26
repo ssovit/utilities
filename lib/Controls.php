@@ -8,12 +8,10 @@ if (!\defined('ABSPATH')) {
 }
 if (!class_exists("\Sovit\Controls")) {
 
-    class Controls {
-        /**
-         * @param array $field
-         * @return null
-         */
-        public static function render($field = []) {
+    class Controls
+    {
+        public static function render($field = [])
+        {
             if (empty($field) || empty($field['id'])) {
                 return;
             }
@@ -43,10 +41,8 @@ if (!class_exists("\Sovit\Controls")) {
             }
         }
 
-        /**
-         * @param array $field
-         */
-        public function textarea($field = []) {
+        public function textarea($field = [])
+        {
             if (empty($field['attributes']['class'])) {
                 $field['attributes']['class'] = 'widefat';
             }
@@ -54,15 +50,13 @@ if (!class_exists("\Sovit\Controls")) {
                 $field['attributes']['rows'] = '5';
             }
 
-            $attributes =Helper::render_html_attributes($field['attributes']);
+            $attributes = Helper::render_html_attributes($field['attributes']);
             echo '<textarea id="' . esc_attr($field['id']) . '" name="' . esc_attr($field['name']) . '" ' . $attributes . '/>' . esc_html($field['value']) . '</textarea>';
 
         }
 
-        /**
-         * @param array $field
-         */
-        private static function checkbox(array $field) {
+        private static function checkbox(array $field)
+        {
             echo '<label class="switch">';
             echo '<input type="checkbox" id="' . esc_attr($field['id']) . '" name="' . esc_attr($field['name']) . '" value="yes" ';
             checked($field['value'], 'yes');
@@ -72,10 +66,8 @@ if (!class_exists("\Sovit\Controls")) {
 
         }
 
-        /**
-         * @param array $field
-         */
-        private static function checkbox_list(array $field) {
+        private static function checkbox_list(array $field)
+        {
             if (!\is_array($field['value'])) {
                 $field['value'] = [];
             }
@@ -93,19 +85,15 @@ if (!class_exists("\Sovit\Controls")) {
 
         }
 
-        /**
-         * @param array $field
-         */
-        private static function colorpicker(array $field) {
+        private static function colorpicker(array $field)
+        {
             $attributes = Helper::render_html_attributes($field['attributes']);
             echo '<input type="hidden" id="' . esc_attr($field['id']) . '" name="' . esc_attr($field['name']) . '" value="' . esc_attr($field['value']) . '"/>';
             echo '<span class="colorpicker-pickr" data-value="' . esc_attr($field['value']) . '" data-target="' . esc_attr($field['id']) . '" data-default="' . esc_attr($field['std']) . '"></span>';
         }
 
-        /**
-         * @param array $field
-         */
-        private static function editor($field = []) {
+        private static function editor($field = [])
+        {
             wp_editor($field['value'], $field['id'], [
                 'textarea_name' => $field['name'],
                 'teeny'         => true,
@@ -113,13 +101,10 @@ if (!class_exists("\Sovit\Controls")) {
             ]);
         }
 
-        /**
-         * @param array $field
-         * @return null
-         */
-        private static function raw_html(array $field) {
+        private static function raw_html(array $field)
+        {
             if (empty($field['html'])) {
-                return;
+                // return;
             }
             echo '<div id="' . esc_attr($field['id']) . '">';
 
@@ -128,10 +113,8 @@ if (!class_exists("\Sovit\Controls")) {
             echo '</div>';
         }
 
-        /**
-         * @param array $field
-         */
-        private static function select(array $field) {
+        private static function select(array $field)
+        {
             $attributes = Helper::render_html_attributes($field['attributes']);
 
             echo '<select name="' . esc_attr($field['name']) . '" id="' . esc_attr($field['id']) . '" ' . $attributes . '>';
@@ -145,13 +128,11 @@ if (!class_exists("\Sovit\Controls")) {
                 echo '>' . esc_html__($label) . '</option>';
             }
             echo '</select>';
-            
+
         }
 
-        /**
-         * @param array $field
-         */
-        private static function text(array $field) {
+        private static function text(array $field)
+        {
             if (empty($field['attributes']['class'])) {
                 $field['attributes']['class'] = 'regular-text';
             }

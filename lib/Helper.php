@@ -15,7 +15,6 @@ if (!class_exists('\Sovit\Helper')) {
                 echo wpautop(sprintf('<a href="%s"" class="button-primary">%s</a>', $btn['url'], $btn['label']));
             }
             echo "</div>";
-
         }
 
         /**
@@ -72,6 +71,7 @@ if (!class_exists('\Sovit\Helper')) {
                     'href'  => [],
                     'rel'   => [],
                     'title' => [],
+                    'target' => ['_blank'],
                 ],
                 'abbr'                          => [
                     'title' => [],

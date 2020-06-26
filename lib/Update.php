@@ -2,25 +2,20 @@
 namespace Sovit;
 
 if (!class_exists('\Sovit\Update')) {
-    class Update {
+    class Update
+    {
         const SERVER = "https://wppress.net";
 
-        /**
-         * @param $file
-         * @param $plugin_name
-         * @param $itemid
-         * @param $version
-         * @param $license_key
-         * @param $license_page
-         * @return mixed
-         */
-        public function __construct($file, $plugin_name, $itemid, $version, $license_key, $license_page) {
-            $this->file         = $file;
+        public function __construct($file = false, $plugin_name = false, $itemid = false, $version = false, $license_key = false, $license_page = false, $product_page = false)
+        {
+            $this->file_path    = $file;
+            $this->file         = plugin_basename($file);
             $this->plugin_name  = $plugin_name;
             $this->item_id      = $itemid;
             $this->version      = $version;
             $this->license_key  = $license_key;
             $this->license_page = $license_page;
+            $this->product_page = $product_page;
             add_filter('pre_set_site_transient_update_plugins', [$this, 'check_update']);
             add_filter('plugins_api', [$this, 'check_info'], 10, 3);
             add_action('admin_init', [$this, 'admin_init']);
@@ -28,21 +23,20 @@ if (!class_exists('\Sovit\Update')) {
             return $this;
         }
 
-        public function admin_init() {
+        public function admin_init()
+        {
+            add_filter('plugin_row_meta', [$this, 'plugin_row_meta'], 10, 4);
             if ('' == $this->license_key) {
-                add_filter('plugin_action_links_' . plugin_basename($this->file), [$this, 'plugin_action_link']);
+                add_filter('plugin_action_links_' . $this->file, [$this, 'plugin_action_link_activation']);
                 add_action('admin_notices', [$this,
                     'license_nag',
                 ]);
-                add_action("after_plugin_row_" . plugin_basename($this->file), [$this, 'after_plugin_row'], 50, 2);
+                add_action("after_plugin_row_" . $this->file, [$this, 'after_plugin_row'], 50, 2);
             }
         }
 
-        /**
-         * @param $file
-         * @param $plugin_data
-         */
-        public function after_plugin_row($file, $plugin_data) {
+        public function after_plugin_row($file, $plugin_data)
+        {
 
             $wp_list_table = _get_list_table('WP_Plugins_List_Table');
 
@@ -50,9 +44,9 @@ if (!class_exists('\Sovit\Update')) {
                 '<tr class="plugin-update-tr active" id="%s" data-slug="%s" data-plugin="%s">' .
                 '<td colspan="%s" class="plugin-update colspanchange">' .
                 '<div class="update-message notice inline %s notice-alt"><p>',
-                esc_attr(dirname(plugin_basename($this->file)) . '-update-license-nag'),
-                esc_attr(dirname(plugin_basename($this->file))),
-                esc_attr($file),
+                esc_attr(dirname($this->file) . '-update-license-nag'),
+                esc_attr(dirname($this->file)),
+                esc_attr($this->file),
                 esc_attr($wp_list_table->get_column_count()),
                 "notice-warning"
             );
@@ -61,14 +55,9 @@ if (!class_exists('\Sovit\Update')) {
 
         }
 
-        /**
-         * @param $def
-         * @param $action
-         * @param $arg
-         * @return mixed
-         */
-        public function check_info($def, $action, $arg) {
-            if (!isset($arg->slug) || $arg->slug != dirname(plugin_basename($this->file))) {
+        public function check_info($def, $action, $arg)
+        {
+            if (!isset($arg->slug) || dirname($this->file) != $arg->slug) {
                 return false;
             }
             if ('' == $this->license_key) {
@@ -82,11 +71,8 @@ if (!class_exists('\Sovit\Update')) {
             return $def;
         }
 
-        /**
-         * @param $transient
-         * @return mixed
-         */
-        public function check_update($transient) {
+        public function check_update($transient)
+        {
             if (empty($transient->checked)) {
                 return $transient;
             }
@@ -98,18 +84,16 @@ if (!class_exists('\Sovit\Update')) {
                 if (version_compare($info->version, $this->version, '<=')) {
                     return $transient;
                 }
-                $info->new_version                                 = $info->version;
-                $info->package                                     = $info->download_link;
-                $transient->response[plugin_basename($this->file)] = $info;
+                $info->new_version                = $info->version;
+                $info->package                    = $info->download_link;
+                $transient->response[$this->file] = $info;
             }
 
             return $transient;
         }
 
-        /**
-         * @return mixed
-         */
-        public function get_update_data() {
+        public function get_update_data()
+        {
             $info                      = false;
             $query                     = [];
             $query['wpp-item-id']      = $this->item_id;
@@ -119,82 +103,78 @@ if (!class_exists('\Sovit\Update')) {
             $url                       = add_query_arg($query, self::SERVER);
             // Get the remote info
             $request = wp_remote_get($url);
-            if (!is_wp_error($request) || 200 === wp_remote_retrieve_response_code($request)) {
+            if (!is_wp_error($request) && 200 === wp_remote_retrieve_response_code($request)) {
                 $info = maybe_unserialize($request['body']);
-                if (\is_object($info)) {
-                    $info->slug = dirname(plugin_basename($this->file));
+                if (is_object($info)) {
+                    $info->slug = dirname($this->file);
                 }
             }
 
             return $info;
         }
 
-        public function license_nag() {
-            \Sovit\Helper::add_notice(sprintf(esc_html__("Enter valid license key for %s"), $this->plugin_name), "error", [
+        public function license_nag()
+        {
+            Helper::add_notice(sprintf(esc_html__("Enter valid license key for %s"), $this->plugin_name), "error", [
                 "url"   => $this->license_page,
                 "label" => esc_html__("Enter License Key"),
             ]);
 
         }
 
-        /**
-         * @param array $links
-         * @return mixed
-         */
-        public function plugin_action_link($links = []) {
+        public function plugin_action_link_activation($links = [])
+        {
             $links[] = '<a href="' . $this->license_page . '" style="font-weight:700; color:green;">' . esc_html__('Activate License') . '</a>';
-
             return $links;
         }
 
-        /**
-         * @param $file
-         */
-        public function set_file($file) {
-            $this->file = $file;
+        public function plugin_row_meta($plugin_meta = [], $file, $plugin_data, $status)
+        {
+            if ($file == $this->file) {
+                $plugin_meta[] = '<a href="' . $this->product_page . '" style="font-weight:700; color:green;" target="_blank">' . esc_html__('Give us ★★★★★ rating?') . '</a>';
+            }
+            return $plugin_meta;
         }
 
-        /**
-         * @param $id
-         * @return mixed
-         */
-        public function set_item_id($id) {
+        public function set_file($file)
+        {
+            $this->file_path = $file;
+
+            $this->file = plugin_basename($file);
+        }
+
+        public function set_item_id($id)
+        {
             $this->item_id = $id;
             return $this;
         }
 
-        /**
-         * @param $key
-         * @return mixed
-         */
-        public function set_license($key) {
+        public function set_license($key)
+        {
             $this->license_key = $key;
             return $this;
         }
 
-        /**
-         * @param $page
-         * @return mixed
-         */
-        public function set_license_page($page) {
+        public function set_license_page($page)
+        {
             $this->license_page = $page;
             return $this;
         }
 
-        /**
-         * @param $name
-         * @return mixed
-         */
-        public function set_plugin_name($name) {
+        public function set_plugin_name($name)
+        {
             $this->plugin_name = $name;
             return $this;
         }
 
-        /**
-         * @param $version
-         * @return mixed
-         */
-        public function set_version($version) {
+        public function set_product_page($page)
+        {
+            $this->product_page = $page;
+            return $this;
+        }
+
+        public function set_version($version)
+        {
             $this->version = $version;
             return $this;
         }

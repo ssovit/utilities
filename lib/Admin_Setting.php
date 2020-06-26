@@ -1,89 +1,52 @@
 <?php
 namespace Sovit;
+
 if (!class_exists("\Sovit\Admin_Setting")) {
-    class Admin_Setting {
-        /**
-         * @var mixed
-         */
+    class Admin_Setting
+    {
         public $page = null;
 
-        /**
-         * @var string
-         */
         private $capability = "manage_options";
 
-        /**
-         * @var string
-         */
         private $menu_icon = "";
 
-        /**
-         * @var mixed
-         */
         private $menu_parent = false;
 
-        /**
-         * @var mixed
-         */
         private $menu_position = null;
 
-        /**
-         * @var mixed
-         */
         private $menu_title;
 
-        /**
-         * @var mixed
-         */
         private $page_id = "sovit-settings";
 
-        /**
-         * @var mixed
-         */
         private $page_title = "Settings";
 
-        /**
-         * @var string
-         */
         private $setting_key = "sovit_setting";
 
-        /**
-         * @var mixed
-         */
         private $tabs = null;
 
-        /**
-         * @param $page_id
-         * @return mixed
-         */
-        public function __construct($page_id = false, $setting_key = false, $page_title = false, $menu_title = false) {
+        public function __construct($page_id = false, $setting_key = false, $page_title = false, $menu_title = false)
+        {
             add_action('admin_menu', [$this, 'admin_menu'], 20);
             add_action('admin_init', [$this, 'register_settings_fields']);
-            if ($page_id !== false) {
+            if (false !== $page_id) {
                 $this->set_page_id($page_id);
             }
-            if ($page_title !== false) {
+            if (false !== $page_title) {
                 $this->set_page_title($page_title);
             }
-            if ($menu_title !== false) {
+            if (false !== $menu_title) {
                 $this->set_menu_title($menu_title);
             }
-            if ($setting_key !== false) {
+            if (false !== $setting_key) {
                 $this->set_setting_key($setting_key);
             }
-            add_action('admin_enqueue_scripts', [$this, 'admin_enqueue_scripts'],999);
+            add_action('admin_enqueue_scripts', [$this, 'admin_enqueue_scripts'], 999);
 
             return $this;
         }
 
-        /**
-         * @param $tab_id
-         * @param $section_id
-         * @param $field_id
-         * @param array $field_args
-         * @return mixed
-         */
-        public function add_field($tab_id, $section_id, $field_id, array $field_args) {
+        public function add_field($tab_id, $section_id, $field_id, array $field_args)
+        {
             $this->ensure_tabs();
 
             if (!isset($this->tabs[$tab_id])) {
@@ -105,25 +68,16 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             return $this;
         }
 
-        /**
-         * @param $tab_id
-         * @param $section_id
-         * @param array $fields
-         */
-        final public function add_fields($tab_id, $section_id, array $fields) {
+        final public function add_fields($tab_id, $section_id, array $fields)
+        {
             foreach ($fields as $field_id => $field_args) {
                 $this->add_field($tab_id, $section_id, $field_id, $field_args);
             }
             return $this;
         }
 
-        /**
-         * @param $tab_id
-         * @param $section_id
-         * @param array $section_args
-         * @return null
-         */
-        final public function add_section($tab_id, $section_id, array $section_args = []) {
+        final public function add_section($tab_id, $section_id, array $section_args = [])
+        {
             $this->ensure_tabs();
 
             if (!isset($this->tabs[$tab_id])) {
@@ -144,10 +98,8 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             return $this;
         }
 
-        /**
-         * @param $hook
-         */
-        public function admin_enqueue_scripts($hook) {
+        public function admin_enqueue_scripts($hook)
+        {
 
             if ($hook == $this->page) {
                 wp_register_script('pickr', \Sovit\Helper::get_file_url(dirname(__FILE__) . '/assets/pickr.min.js'), ['jquery'], null, true);
@@ -158,8 +110,9 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             }
         }
 
-        public function admin_menu() {
-            if ($this->menu_parent === false) {
+        public function admin_menu()
+        {
+            if (false === $this->menu_parent) {
                 $this->page = add_menu_page(
                     $this->page_title,
                     $this->menu_title,
@@ -182,7 +135,8 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             }
         }
 
-        public function display_settings_page() {
+        public function display_settings_page()
+        {
 
             $tabs = $this->get_tabs();
             echo "<style>.settings-wrap .tab-wrapper {display: none;}.settings-wrap .tab-wrapper.tab-active {display: block;}</style>";
@@ -259,22 +213,13 @@ if (!class_exists("\Sovit\Admin_Setting")) {
 
         }
 
-        /**
-         * @return mixed
-         */
-        public function get_page() {
+        public function get_page()
+        {
             return $this->page;
         }
 
-        /**
-         * @param $field_id
-         * @param $field
-         * @param $section_id
-         * @param $prefix
-         * @param false $value
-         * @return null
-         */
-        public function register_setting_field($field_id, $field, $section_id, $setting_key = false, $value = []) {
+        public function register_setting_field($field_id, $field, $section_id, $setting_key = false, $value = [])
+        {
             $controls_class_name = '\Sovit\Controls';
             if (false === $setting_key) {
                 $setting_key = $this->setting_key;
@@ -308,7 +253,8 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             );
         }
 
-        public function register_settings_fields() {
+        public function register_settings_fields()
+        {
             $tabs = $this->get_tabs();
 
             foreach ($tabs as $tab_id => $tab) {
@@ -334,79 +280,56 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             register_setting($this->page_id, $this->setting_key, []);
         }
 
-        /**
-         * @param $capability
-         * @return mixed
-         */
-        public function set_capability($capability) {
+        public function set_capability($capability)
+        {
             $this->capability = $capability;
             return $this;
         }
 
-        /**
-         * @param $icon
-         * @return mixed
-         */
-        public function set_icon($icon) {
+        public function set_icon($icon)
+        {
             $this->menu_icon = $icon;
             return $this;
         }
 
-        /**
-         * @param $parent
-         * @return mixed
-         */
-        public function set_menu_parent($parent) {
+        public function set_menu_parent($parent)
+        {
             $this->menu_parent = $parent;
             return $this;
         }
 
-        /**
-         * @param $position
-         * @return mixed
-         */
-        public function set_menu_position($position) {
+        public function set_menu_position($position)
+        {
             $this->menu_position = $position;
             return $this;
         }
 
-        /**
-         * @param $title
-         * @return mixed
-         */
-        public function set_menu_title($title) {
+        public function set_menu_title($title)
+        {
             $this->menu_title = $title;
             return $this;
         }
 
-        /**
-         * @param $id
-         * @return mixed
-         */
-        public function set_page_id($page_id) {
+        public function set_page_id($page_id)
+        {
             $this->page_id = $page_id;
             return $this;
         }
 
-        /**
-         * @param $title
-         * @return mixed
-         */
-        public function set_page_title($title) {
+        public function set_page_title($title)
+        {
             $this->page_title = $title;
             return $this;
         }
 
-        /**
-         * @param $key
-         * @return mixed
-         */
-        public function set_setting_key($key) {
+        public function set_setting_key($key)
+        {
             $this->setting_key = $key;
             return $this;
         }
 
-        protected function create_tabs() {
+        protected function create_tabs()
+        {
             $tabs = [
                 'general' => [
                     'label'    => esc_html__('General'),
@@ -417,16 +340,15 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             return apply_filters('wppress/settings/' . $this->page_id . '/tabs', $tabs);
         }
 
-        /**
-         * @return mixed
-         */
-        protected function get_tabs() {
+        protected function get_tabs()
+        {
             $this->ensure_tabs();
 
             return $this->tabs;
         }
 
-        private function ensure_tabs() {
+        private function ensure_tabs()
+        {
             if (null === $this->tabs) {
                 $this->tabs = $this->create_tabs();
                 // action hook wppress/{PAGE_ID}/after_create_settings to add more settings
@@ -434,10 +356,8 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             }
         }
 
-        /**
-         * @param $file
-         */
-        private function get_file_url($file = __FILE__) {
+        private function get_file_url($file = __FILE__)
+        {
             $file_path = str_replace("\\", "/", str_replace(str_replace("/", "\\", WP_CONTENT_DIR), "", $file));
             if ($file_path) {
                 return content_url($file_path);
