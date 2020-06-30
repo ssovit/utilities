@@ -6,7 +6,7 @@ if (!class_exists('\Sovit\Update')) {
     {
         const SERVER = "https://wppress.net";
 
-        public function __construct($file = false, $plugin_name = false, $itemid = false, $version = false, $license_key = false, $license_page = false, $product_page = false)
+        public function __construct($file = false, $plugin_name = false, $itemid = false, $version = false, $license_key = false, $license_page = false)
         {
             $this->file         = plugin_basename($file);
             $this->plugin_name  = $plugin_name;
@@ -14,20 +14,18 @@ if (!class_exists('\Sovit\Update')) {
             $this->version      = $version;
             $this->license_key  = $license_key;
             $this->license_page = $license_page;
-            $this->product_page = $product_page;
+            $this->product_page = "https://codecanyon.net/item/x/" . $this->item_id;
             add_filter('pre_set_site_transient_update_plugins', [$this, 'check_update']);
             add_filter('plugins_api', [$this, 'check_info'], 10, 3);
             add_action('admin_init', [$this, 'admin_init']);
             add_action('admin_footer', [$this, 'admin_footer']);
             add_action('wp_ajax_dismiss-wppress-rating-' . $this->item_id, [$this, 'dismiss_rating']);
-
             return $this;
         }
 
         public function admin_footer()
         {
             echo '<script type="text/javascript">jQuery(".dismiss-wppress-rating").on("click",".notice-dismiss",function(e){var envato_id=jQuery(e.currentTarget).closest(".dismiss-wppress-rating").attr("data-envato-id");    jQuery.get(ajaxurl,{action:"dismiss-wppress-rating-"+envato_id});});</script>';
-
         }
 
         public function admin_init()
