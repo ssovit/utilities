@@ -25,7 +25,7 @@ if (!class_exists('\Sovit\Update')) {
 
         public function admin_footer()
         {
-            echo '<script type="text/javascript">jQuery(".dismiss-wppress-rating").on("click",".notice-dismiss",function(e){var envato_id=jQuery(e.currentTarget).closest(".dismiss-wppress-rating").attr("data-envato-id");    jQuery.get(ajaxurl,{action:"dismiss-wppress-rating-"+envato_id});});</script>';
+            echo '<script type="text/javascript">!function(s){s(".dismiss-wppress-rating-'.$this->item_id.'").on("click",".notice-dismiss",function(i){s.get(ajaxurl,{action:"dismiss-wppress-rating-'.$this->item_id.'"})})}(jQuery);</script>';
         }
 
         public function admin_init()
@@ -67,7 +67,7 @@ if (!class_exists('\Sovit\Update')) {
 
         public function ask_rating()
         {
-            Helper::add_notice(sprintf(esc_html__("Enjoying %s? Don't forget to rate us. Your rating is our strength & motivation."), $this->plugin_name), "updated is-dismissible dismiss-wppress-rating", [
+            Helper::add_notice(sprintf(esc_html__("Enjoying %s? Don't forget to rate us. Your rating is our strength & motivation."), $this->plugin_name), "updated is-dismissible dismiss-wppress-rating-".$this->item_id, [
                 "url"   => $this->product_page,
                 "label" => esc_html__("Rate us 5 stars"),
             ], ["data-envato-id" => $this->item_id]);
@@ -113,6 +113,7 @@ if (!class_exists('\Sovit\Update')) {
         public function dismiss_rating()
         {
             set_transient("dismiss_rating_" . $this->version . '-' . $this->item_id, "dismissed", 3 * MONTH_IN_SECONDS);
+            wp_send_json_success();
         }
 
         public function get_update_data()
