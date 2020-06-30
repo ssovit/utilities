@@ -8,7 +8,6 @@ if (!class_exists('\Sovit\Update')) {
 
         public function __construct($file = false, $plugin_name = false, $itemid = false, $version = false, $license_key = false, $license_page = false, $product_page = false)
         {
-            $this->file_path    = $file;
             $this->file         = plugin_basename($file);
             $this->plugin_name  = $plugin_name;
             $this->item_id      = $itemid;
@@ -19,8 +18,16 @@ if (!class_exists('\Sovit\Update')) {
             add_filter('pre_set_site_transient_update_plugins', [$this, 'check_update']);
             add_filter('plugins_api', [$this, 'check_info'], 10, 3);
             add_action('admin_init', [$this, 'admin_init']);
+            add_action('admin_footer', [$this, 'admin_footer']);
+            add_action('wp_ajax_dismiss-wppress-rating-' . $this->item_id, [$this, 'dismiss_rating']);
 
             return $this;
+        }
+
+        public function admin_footer()
+        {
+            echo '<script type="text/javascript">jQuery(".dismiss-wppress-rating").on("click",".notice-dismiss",function(e){var envato_id=jQuery(e.currentTarget).closest(".dismiss-wppress-rating").attr("data-envato-id");    jQuery.get(ajaxurl,{action:"dismiss-wppress-rating-"+envato_id});});</script>';
+
         }
 
         public function admin_init()
@@ -32,6 +39,11 @@ if (!class_exists('\Sovit\Update')) {
                     'license_nag',
                 ]);
                 add_action("after_plugin_row_" . $this->file, [$this, 'after_plugin_row'], 50, 2);
+            }
+            if (get_transient("dismiss_rating_" . $this->version . '-' . $this->item_id) != 'dismissed') {
+                add_action('admin_notices', [$this,
+                    'ask_rating',
+                ]);
             }
         }
 
@@ -53,6 +65,14 @@ if (!class_exists('\Sovit\Update')) {
             echo "<a href=\"" . $this->license_page . "\">" . esc_html__("Enter valid license key/purchase code to enable automatic update.") . "</a>";
             echo "</p></td></tr>";
 
+        }
+
+        public function ask_rating()
+        {
+            Helper::add_notice(sprintf(esc_html__("Enjoying %s? Don't forget to rate us. Your rating is our strength & motivation."), $this->plugin_name), "updated is-dismissible dismiss-wppress-rating", [
+                "url"   => $this->product_page,
+                "label" => esc_html__("Rate us 5 stars"),
+            ], ["data-envato-id" => $this->item_id]);
         }
 
         public function check_info($def, $action, $arg)
@@ -90,6 +110,11 @@ if (!class_exists('\Sovit\Update')) {
             }
 
             return $transient;
+        }
+
+        public function dismiss_rating()
+        {
+            set_transient("dismiss_rating_" . $this->version . '-' . $this->item_id, "dismissed", 3 * MONTH_IN_SECONDS);
         }
 
         public function get_update_data()
@@ -138,9 +163,8 @@ if (!class_exists('\Sovit\Update')) {
 
         public function set_file($file)
         {
-            $this->file_path = $file;
-
             $this->file = plugin_basename($file);
+            return $this;
         }
 
         public function set_item_id($id)

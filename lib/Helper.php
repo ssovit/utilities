@@ -1,28 +1,21 @@
 <?php
-
 namespace Sovit;
 
 if (!class_exists('\Sovit\Helper')) {
     class Helper
     {
-        /**
-         * @param $message
-         * @param $type
-         * @param $btn
-         */
-        public static function add_notice($message = "", $type = "success", $btn = false)
+        public static function add_notice($message = "", $class = "success", $btn = false, $attributes = [])
         {
-            echo "<div class=\"notice $type\">";
+            $attributes['class'] = "notice {$class}";
+            $attr                = self::render_html_attributes($attributes);
+            echo "<div {$attr}>";
             echo wpautop($message);
             if (!empty($btn)) {
-                echo wpautop(sprintf('<a href="%s"" class="button-primary">%s</a>', $btn['url'], $btn['label']));
+                echo wpautop(sprintf('<a href="%s" class="button-primary" target="_blank">%s</a>', $btn['url'], $btn['label']));
             }
             echo "</div>";
         }
 
-        /**
-         * @param $file
-         */
         public static function get_file_url($file = __FILE__)
         {
             $file_path = str_replace(str_replace("\\", "/", WP_CONTENT_DIR), "", str_replace("\\", "/", $file));
@@ -33,12 +26,19 @@ if (!class_exists('\Sovit\Helper')) {
             return false;
         }
 
-        /**
-         * @param $taxonomy
-         * @param $key
-         * @param $value
-         * @param $hideEmpty
-         */
+        public static function get_string_between($string, $start, $end)
+        {
+            $string = ' ' . $string;
+            $ini    = strpos($string, $start);
+            if (0 == $ini) {
+                return '';
+            }
+
+            $ini += strlen($start);
+            $len = strpos($string, $end, $ini) - $ini;
+            return substr($string, $ini, $len);
+        }
+
         public static function get_terms($taxonomy = 'category', $key = "slug", $value = "name", $hideEmpty = true)
         {
             $terms = get_terms([
@@ -52,11 +52,6 @@ if (!class_exists('\Sovit\Helper')) {
             return wp_list_pluck($terms, $value, $key);
         }
 
-        /**
-         * @param $filename
-         * @param $suggested
-         * @return string
-         */
         public static function goodname($filename = "", $suggested = "wppress")
         {
             $part          = explode(".", $filename);
@@ -65,19 +60,15 @@ if (!class_exists('\Sovit\Helper')) {
             return $friendly_name . "." . strtolower($ext);
         }
 
-        /**
-         * @param $raw
-         * @return mixed
-         */
         public static function kses($raw)
         {
 
             $allowed_tags = [
                 'a'                             => [
-                    'class' => [],
-                    'href'  => [],
-                    'rel'   => [],
-                    'title' => [],
+                    'class'  => [],
+                    'href'   => [],
+                    'rel'    => [],
+                    'title'  => [],
                     'target' => ['_blank'],
                 ],
                 'abbr'                          => [
@@ -177,9 +168,6 @@ if (!class_exists('\Sovit\Helper')) {
             }
         }
 
-        /**
-         * @param array $array
-         */
         public static function map_for_checkbox_list($array = [])
         {
             return array_map(function ($key, $value) {
@@ -187,24 +175,19 @@ if (!class_exists('\Sovit\Helper')) {
             }, array_keys($array), $array);
         }
 
-        /**
-         * @param $rel
-         * @param $base
-         * @return mixed
-         */
         public static function maybeabsolute($rel, $base)
         {
             if (parse_url($rel, PHP_URL_SCHEME) != '') {
                 return $rel;
             }
-            if ($rel[0] == '#' || $rel[0] == '?') {
+            if ('#' == $rel[0] || '?' == $rel[0]) {
                 return $base . $rel;
             }
             $base = trailingslashit($base);
             extract(parse_url($base));
 
             $path = preg_replace('#/[^/]*$#', '', $path);
-            if ($rel[0] == '/') {
+            if ('/' == $rel[0]) {
                 $path = '';
             }
             $abs = "$host$path/$rel";
@@ -213,10 +196,6 @@ if (!class_exists('\Sovit\Helper')) {
             return $scheme . '://' . $abs;
         }
 
-        /**
-         * @param $format
-         * @return mixed
-         */
         public static function phpToMoment($format)
         {
             $replacements = [
@@ -261,9 +240,6 @@ if (!class_exists('\Sovit\Helper')) {
             return strtr($format, $replacements);
         }
 
-        /**
-         * @param array $attributes
-         */
         public static function render_html_attributes(array $attributes)
         {
             $rendered_attributes = [];
@@ -279,9 +255,6 @@ if (!class_exists('\Sovit\Helper')) {
             return implode(' ', $rendered_attributes);
         }
 
-        /**
-         * @param $string
-         */
         public static function slugify($string = "")
         {
             return strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $string), '-'));
@@ -436,18 +409,6 @@ if (!class_exists('\Sovit\Helper')) {
                 '(UTC+13:00) Nuku\'alofa'                     => 'Pacific/Tongatapu',
             ]);
 
-        }
-        public static function get_string_between($string, $start, $end)
-        {
-            $string = ' ' . $string;
-            $ini    = strpos($string, $start);
-            if ($ini == 0) {
-                return '';
-            }
-
-            $ini += strlen($start);
-            $len = strpos($string, $end, $ini) - $ini;
-            return substr($string, $ini, $len);
         }
     }
 }
