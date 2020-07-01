@@ -25,7 +25,7 @@ if (!class_exists('\Sovit\Update')) {
 
         public function admin_footer()
         {
-            echo '<script type="text/javascript">!function(s){s(".dismiss-wppress-rating-'.$this->item_id.'").on("click",".notice-dismiss",function(i){s.get(ajaxurl,{action:"dismiss-wppress-rating-'.$this->item_id.'"})})}(jQuery);</script>';
+            echo '<script type="text/javascript">!function(s){s(".dismiss-wppress-rating-' . $this->item_id . '").on("click",".notice-dismiss",function(i){s.get(ajaxurl,{action:"dismiss-wppress-rating-' . $this->item_id . '"})})}(jQuery);</script>';
         }
 
         public function admin_init()
@@ -38,7 +38,7 @@ if (!class_exists('\Sovit\Update')) {
                 ]);
                 add_action("after_plugin_row_" . $this->file, [$this, 'after_plugin_row'], 50, 2);
             }
-            if (get_transient("dismiss_rating_" . $this->version . '-' . $this->item_id) != 'dismissed') {
+            if (get_transient("dismiss_rating_" . $this->version . '-' . $this->item_id) == 'dismissed') {
                 add_action('admin_notices', [$this,
                     'ask_rating',
                 ]);
@@ -67,9 +67,9 @@ if (!class_exists('\Sovit\Update')) {
 
         public function ask_rating()
         {
-            Helper::add_notice(sprintf(esc_html__("Enjoying %s? Don't forget to rate us. Your rating is our strength & motivation."), $this->plugin_name), "updated is-dismissible dismiss-wppress-rating-".$this->item_id, [
+            Helper::add_notice(sprintf(esc_html__("Enjoying %s? Don't forget to rate us. Your rating is our strength & motivation.") . "\n\n" . esc_html__("It would only take a minute."), $this->plugin_name), "updated is-dismissible dismiss-wppress-rating-" . $this->item_id, [
                 "url"   => $this->product_page,
-                "label" => esc_html__("Rate us 5 stars"),
+                "label" => esc_html__("Give us 5 stars"),
             ]);
         }
 
@@ -112,7 +112,7 @@ if (!class_exists('\Sovit\Update')) {
 
         public function dismiss_rating()
         {
-            set_transient("dismiss_rating_" . $this->version . '-' . $this->item_id, "dismissed", 1 * MONTH_IN_SECONDS);
+            set_transient("dismiss_rating_" . $this->version . '-' . $this->item_id, "dismissed", 3 * MONTH_IN_SECONDS);
             wp_send_json_success();
         }
 
