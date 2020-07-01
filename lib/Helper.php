@@ -160,12 +160,7 @@ if (!class_exists('\Sovit\Helper')) {
                     'class' => [],
                 ],
             ];
-            if (function_exists('wp_kses')) {
-                // WP is here
-                return wp_kses($raw, $allowed_tags);
-            } else {
-                return $raw;
-            }
+            return wp_kses($raw, $allowed_tags);
         }
 
         public static function map_for_checkbox_list($array = [])

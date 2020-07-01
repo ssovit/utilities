@@ -1,6 +1,6 @@
 {
   "name": "@ssovit/utilities",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Utilities for WP Plugin Dev",
   "main": "index.js",
   "directories": {

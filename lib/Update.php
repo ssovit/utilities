@@ -70,7 +70,7 @@ if (!class_exists('\Sovit\Update')) {
             Helper::add_notice(sprintf(esc_html__("Enjoying %s? Don't forget to rate us. Your rating is our strength & motivation."), $this->plugin_name), "updated is-dismissible dismiss-wppress-rating-".$this->item_id, [
                 "url"   => $this->product_page,
                 "label" => esc_html__("Rate us 5 stars"),
-            ], ["data-envato-id" => $this->item_id]);
+            ]);
         }
 
         public function check_info($def, $action, $arg)
@@ -112,7 +112,7 @@ if (!class_exists('\Sovit\Update')) {
 
         public function dismiss_rating()
         {
-            set_transient("dismiss_rating_" . $this->version . '-' . $this->item_id, "dismissed", 3 * MONTH_IN_SECONDS);
+            set_transient("dismiss_rating_" . $this->version . '-' . $this->item_id, "dismissed", 1 * MONTH_IN_SECONDS);
             wp_send_json_success();
         }
 

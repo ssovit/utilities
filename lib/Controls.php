@@ -41,20 +41,6 @@ if (!class_exists("\Sovit\Controls")) {
             }
         }
 
-        public function textarea($field = [])
-        {
-            if (empty($field['attributes']['class'])) {
-                $field['attributes']['class'] = 'widefat';
-            }
-            if (empty($field['attributes']['rows'])) {
-                $field['attributes']['rows'] = '5';
-            }
-
-            $attributes = Helper::render_html_attributes($field['attributes']);
-            echo '<textarea id="' . esc_attr($field['id']) . '" name="' . esc_attr($field['name']) . '" ' . $attributes . '/>' . esc_html($field['value']) . '</textarea>';
-
-        }
-
         private static function checkbox(array $field)
         {
             echo '<label class="switch">';
@@ -104,7 +90,7 @@ if (!class_exists("\Sovit\Controls")) {
         private static function raw_html(array $field)
         {
             if (empty($field['html'])) {
-                // return;
+                return;
             }
             echo '<div id="' . esc_attr($field['id']) . '">';
 
@@ -139,6 +125,20 @@ if (!class_exists("\Sovit\Controls")) {
 
             $attributes = Helper::render_html_attributes($field['attributes']);
             echo '<input type="' . esc_attr($field['type']) . '" id="' . esc_attr($field['id']) . '" name="' . esc_attr($field['name']) . '" value="' . esc_attr($field['value']) . '" ' . $attributes . '/>';
+
+        }
+
+        private static function textarea($field = [])
+        {
+            if (empty($field['attributes']['class'])) {
+                $field['attributes']['class'] = 'widefat';
+            }
+            if (empty($field['attributes']['rows'])) {
+                $field['attributes']['rows'] = '5';
+            }
+
+            $attributes = Helper::render_html_attributes($field['attributes']);
+            echo '<textarea id="' . esc_attr($field['id']) . '" name="' . esc_attr($field['name']) . '" ' . $attributes . '/>' . esc_html($field['value']) . '</textarea>';
 
         }
     }
