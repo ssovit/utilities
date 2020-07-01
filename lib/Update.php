@@ -38,7 +38,7 @@ if (!class_exists('\Sovit\Update')) {
                 ]);
                 add_action("after_plugin_row_" . $this->file, [$this, 'after_plugin_row'], 50, 2);
             }
-            if (get_transient("dismiss_rating_" . $this->version . '-' . $this->item_id) == 'dismissed') {
+            if (get_transient("dismiss_rating_" . $this->version . '-' . $this->item_id) != 'dismissed') {
                 add_action('admin_notices', [$this,
                     'ask_rating',
                 ]);
