@@ -8,6 +8,8 @@ if (!class_exists("\Sovit\Admin_Setting")) {
 
         private $capability = "manage_options";
 
+        private $folder = null;
+
         private $menu_icon = "";
 
         private $menu_parent = false;
@@ -102,12 +104,16 @@ if (!class_exists("\Sovit\Admin_Setting")) {
         {
 
             if ($hook == $this->page) {
-                wp_register_script('pickr', \Sovit\Helper::get_file_url(dirname(__FILE__) . '/assets/pickr.min.js'), ['jquery'], null, true);
-                wp_enqueue_script($this->page_id . '-setting-js', \Sovit\Helper::get_file_url(dirname(__FILE__) . '/assets/settings.min.js'), ['jquery', 'pickr'], null, true);
-                wp_register_style('pickr-css', \Sovit\Helper::get_file_url(dirname(__FILE__) . "/assets/pickr.css"), []);
-                wp_enqueue_style($this->page_id . '-setting-css', \Sovit\Helper::get_file_url(dirname(__FILE__) . "/assets/settings.min.css"), ['pickr-css']);
+                wp_register_script('pickr', $this->get_url('assets/pickr.min.js'), ['jquery'], null, true);
+                wp_enqueue_script($this->page_id . '-setting-js', $this->get_url('assets/settings.min.js'), ['jquery', 'pickr'], null, true);
+                wp_register_style('pickr-css', $this->get_url('assets/pickr.css'), []);
+                wp_enqueue_style($this->page_id . '-setting-css', $this->get_url('assets/settings.min.css'), ['pickr-css']);
 
             }
+        }
+        public function get_url($file="")
+        {
+            return trailingslashit(plugin_dir_url(__FILE__)).$file;
         }
 
         public function admin_menu()
@@ -286,6 +292,11 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             return $this;
         }
 
+        public function set_folder($folder)
+        {
+            $this->folder = $folder;
+        }
+
         public function set_icon($icon)
         {
             $this->menu_icon = $icon;
@@ -336,7 +347,6 @@ if (!class_exists("\Sovit\Admin_Setting")) {
                     'sections' => [],
                 ],
             ];
-            // filter to create tabs wppress/settings/{PAGE_ID}/tabs
             return apply_filters('wppress/settings/' . $this->page_id . '/tabs', $tabs);
         }
 
