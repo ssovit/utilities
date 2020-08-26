@@ -8,7 +8,6 @@ if (!class_exists("\Sovit\Admin_Setting")) {
 
         private $capability = "manage_options";
 
-        private $folder = null;
 
         private $menu_icon = "";
 
@@ -292,10 +291,6 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             return $this;
         }
 
-        public function set_folder($folder)
-        {
-            $this->folder = $folder;
-        }
 
         public function set_icon($icon)
         {
@@ -366,14 +361,5 @@ if (!class_exists("\Sovit\Admin_Setting")) {
             }
         }
 
-        private function get_file_url($file = __FILE__)
-        {
-            $file_path = str_replace("\\", "/", str_replace(str_replace("/", "\\", WP_CONTENT_DIR), "", $file));
-            if ($file_path) {
-                return content_url($file_path);
-            }
-
-            return false;
-        }
     }
 }
