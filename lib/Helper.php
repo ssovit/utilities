@@ -405,5 +405,11 @@ if (!class_exists('\Sovit\Helper')) {
             ]);
 
         }
+
+        public static function verify_fingerprint($modifier, $against, $prefix = "")
+        {
+            // prefix is supposed to be your secret if you pass it
+            return md5($prefix . ":" . $modifier . ":" . $_SERVER["HTTP_USER_AGENT"]) === $against;
+        }
     }
 }
