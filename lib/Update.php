@@ -38,7 +38,7 @@ if (!class_exists('\Sovit\Update')) {
                 ]);
                 add_action("after_plugin_row_" . $this->file, [$this, 'after_plugin_row'], 50, 2);
             }
-            if (get_transient("dismiss_rating_" . $this->version . '-' . $this->item_id) != 'dismissed') {
+            if (!get_user_meta(get_current_user_id(), "wpp_dismiss_" . $this->item_id, true)) {
                 add_action('admin_notices', [$this,
                     'ask_rating',
                 ]);
@@ -112,7 +112,7 @@ if (!class_exists('\Sovit\Update')) {
 
         public function dismiss_rating()
         {
-            set_transient("dismiss_rating_" . $this->version . '-' . $this->item_id, "dismissed", 3 * MONTH_IN_SECONDS);
+            update_user_meta(get_current_user_id(), "wpp_dismiss_" . $this->item_id, true);
             wp_send_json_success();
         }
 
