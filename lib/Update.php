@@ -152,7 +152,7 @@ if (!class_exists('\Sovit\Update')) {
             return $links;
         }
 
-        public function plugin_row_meta($plugin_meta = [], $file, $plugin_data, $status)
+        public function plugin_row_meta($plugin_meta = [], $file=false, $plugin_data=false, $status=false)
         {
             if ($file == $this->file && false !== $this->product_page) {
                 $plugin_meta[] = '<a href="' . $this->product_page . '" style="font-weight:700; color:green;" target="_blank">' . esc_html__('Give us ★★★★★ rating?') . '</a>';
