@@ -44,6 +44,9 @@ if (!class_exists('\Sovit\Update')) {
                     'ask_rating',
                 ]);
             }
+            if(get_option( 'wppress_item_'.$this->item_id,false)){
+                $this->get_update_data();
+            }
             if($this->support_required==true && strtotime(get_option( 'wppress_item_'.$this->item_id, date('c',strtotime('-1 day')) ))<time()){
                 add_action('admin_notices', [$this,
                     'support_expired',
@@ -108,7 +111,6 @@ if (!class_exists('\Sovit\Update')) {
                 return $transient;
             }
             $info = $this->get_update_data();
-            update_option( "wppress_item_".$this->item_id,$info->support_until);
             if (!$info) {
                 return $transient;
             }
@@ -145,6 +147,8 @@ if (!class_exists('\Sovit\Update')) {
                 $info = maybe_unserialize($request['body']);
                 if (is_object($info)) {
                     $info->slug = dirname($this->file);
+                    update_option( "wppress_item_".$this->item_id,$info->support_until);
+
                 }
             }
 
