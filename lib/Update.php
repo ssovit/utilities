@@ -5,6 +5,7 @@ if (!class_exists('\Sovit\Update')) {
     class Update
     {
         const SERVER = "https://wppress.net";
+        private $support_required=false;
 
         public function __construct($file = false, $plugin_name = false, $itemid = false, $version = false, $license_key = false, $license_page = false)
         {
@@ -43,6 +44,11 @@ if (!class_exists('\Sovit\Update')) {
                     'ask_rating',
                 ]);
             }
+            if($this->support_required==true && strtotime(get_option( 'wppress_item_'.$this->item_id, date('c',strtotime('-1 day')) ))<time()){
+                add_action('admin_notices', [$this,
+                    'support_expired',
+                ]);
+            }
         }
 
         public function after_plugin_row($file, $plugin_data)
@@ -72,6 +78,13 @@ if (!class_exists('\Sovit\Update')) {
                 "label" => esc_html__("Give us 5 stars"),
             ]);
         }
+        public function support_expired()
+        {
+            Helper::add_notice(sprintf(esc_html__("Support Expired: %s") . "\n\n" . esc_html__("You will still get lifetime updates for the plugin, but features which requires private API access will not work."), $this->plugin_name), "error", [
+                "url"   => $this->product_page,
+                "label" => esc_html__("Extend Support License"),
+            ]);
+        }
 
         public function check_info($def, $action, $arg)
         {
@@ -95,10 +108,11 @@ if (!class_exists('\Sovit\Update')) {
                 return $transient;
             }
             $info = $this->get_update_data();
+            update_option( "wppress_item_".$this->item_id,$info->support_until);
             if (!$info) {
                 return $transient;
             }
-            if (\is_object($info) && !empty($info)) {
+            if (is_object($info) && !empty($info)) {
                 if (version_compare($info->version, $this->version, '<=')) {
                     return $transient;
                 }
@@ -169,6 +183,11 @@ if (!class_exists('\Sovit\Update')) {
         public function set_item_id($id)
         {
             $this->item_id = $id;
+            return $this;
+        }
+        public function support_is_required()
+        {
+            $this->support_required = true;
             return $this;
         }
 
