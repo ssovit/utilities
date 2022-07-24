@@ -2,20 +2,20 @@
 	"name": "ssovit/utilities",
 	"description": "Utilities for WordPress",
 	"license": "MIT",
-	"homepage": "https://ssovit.com/",
+	"homepage": "https://github.com/ssovit/",
 	"authors": [
 
 		{
 			"name": "Sovit Tamrakar",
 			"email": "sovit.tamrakar@gmail.com",
-			"homepage": "https://ssovit.com/",
+			"homepage": "https://github.com/ssovit/",
 			"role": "Developer"
         }
     ],
 	"support": {
 		"source": "https://github.com/ssovit/utilities",
 		"issues": "https://github.com/ssovit/utilities/issues",
-		"email": "info@wppress.net"
+		"email": "sovit.tamrakar@gmail.com"
 	},
 	"autoload": {
 		"psr-4": {
